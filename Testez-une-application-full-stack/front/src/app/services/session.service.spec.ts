@@ -26,6 +26,11 @@ describe('SessionService', () => {
     const mockUser: SessionInformation = {
       id: 1,
       username: 'testUser',
+      token: 'fake-token',
+      type: 'Bearer',
+      firstName: 'Test',
+      lastName: 'User',
+      admin: false
     };
 
     service.logIn(mockUser);
@@ -43,10 +48,15 @@ describe('SessionService', () => {
     const mockUser: SessionInformation = {
       id: 1,
       username: 'testUser',
+      token: 'fake-token',
+      type: 'Bearer',
+      firstName: 'Test',
+      lastName: 'User',
+      admin: false
     };
 
-    service.logIn(mockUser); 
-    service.logOut();        
+    service.logIn(mockUser);
+    service.logOut();
 
     expect(service.isLogged).toBe(false);
     expect(service.sessionInformation).toBeUndefined();

@@ -92,7 +92,7 @@ describe('FormComponent', () => {
     component.submit();
 
     expect(component.sessionForm?.valid).toBeFalsy();
-    expect(spy).toHaveBeenCalled(); // comportement actuel
+    expect(spy).toHaveBeenCalled(); 
   });
 
   it('should call create() on valid submission in creation mode', () => {
@@ -128,7 +128,6 @@ describe('FormComponent', () => {
   });
 
   it('should call update() on valid submission in edit mode', () => {
-    // Simule l'édition
     (component as any)['onUpdate'] = true;
     (component as any)['id'] = '42';
 

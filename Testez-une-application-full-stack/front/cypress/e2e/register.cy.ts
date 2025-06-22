@@ -1,6 +1,5 @@
 describe('Register and Login flow', () => {
   it('should register a new user and then login', () => {
-    // Intercept register
     cy.intercept('POST', '/api/auth/register', {
       statusCode: 201,
       body: {
@@ -15,7 +14,6 @@ describe('Register and Login flow', () => {
       }
     }).as('register');
 
-    // Intercept login
     cy.intercept('POST', '/api/auth/login', {
       statusCode: 200,
       body: {
@@ -30,10 +28,8 @@ describe('Register and Login flow', () => {
       }
     }).as('login');
 
-    // Intercept sessions
     cy.intercept('GET', '/api/session', []).as('getSessions');
 
-    // inscription ---
     cy.visit('/register');
     cy.get('input[formControlName=email]').type('new@user.com');
     cy.get('input[formControlName=firstName]').type('New');
@@ -43,10 +39,8 @@ describe('Register and Login flow', () => {
 
     cy.wait('@register');
 
-    // Vérifie que redirection vers /login a lieu
     cy.url({ timeout: 5000 }).should('include', '/login');
 
-    // connexion ---
     cy.get('input[formControlName=email]').type('new@user.com');
     cy.get('input[formControlName=password]').type('test!1234');
     cy.get('button[type=submit]').click();

@@ -1,33 +1,80 @@
-describe('Login spec', () => {
-  it('Login successfull', () => {
-    // Intercepte la requête POST /api/auth/login et renvoie un faux token + utilisateur
+/// <reference types="Cypress" />
+
+describe('Login page', () => {
+  beforeEach(() => {
+    cy.visit('/login');
+  });
+
+  it('should sucessfully let the user log in', () => {
     cy.intercept('POST', '/api/auth/login', {
-      statusCode: 200,
       body: {
-        token: 'fake-valid-token',
-        user: {
-          id: 1,
-          email: 'yoga@studio.com',
-          firstName: 'firstName',
-          lastName: 'lastName',
-          admin: true
-        }
-      }
+        id: 1,
+        username: 'userName',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        admin: true,
+      },
     }).as('login');
 
-    // Intercepte les sessions
-    cy.intercept('GET', '/api/session', []).as('session');
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/session',
+      },
+      []
+    ).as('session');
 
-    // Lance la page de login
-    cy.visit('/login');
+    cy.get('input[formControlName=email]').type('yoga@studio.com');
+    cy.get('input[formControlName=password]').type(
+      `${'test!1234'}{enter}{enter}`
+    );
 
-    // Remplit le formulaire
-    cy.get('input[formControlName=email]').type("yoga@studio.com");
-    cy.get('input[formControlName=password]').type("test!1234{enter}");
-    cy.get('button[type=submit]').click();
-
-    // Attend la redirection ou les données
-    cy.wait('@login');
     cy.url().should('include', '/sessions');
+
+    cy.wait('@login').then(({ response }) => {
+      expect(response!.statusCode).to.equal(200);
+    });
+
+    cy.wait('@session').then(({ response }) => {
+      expect(response!.statusCode).to.equal(200);
+    });
+  });
+
+  it('should return error if one of the inputs is not valid', () => {
+    cy.get('input[formControlName=email]').type('yoga@studio.com');
+    cy.get('input[formControlName=password]').type(`'invalid' {enter}{enter}`);
+
+    cy.get('.error').should('be.visible');
+  });
+
+  it('should be able to log out the user after logging in', () => {
+    cy.intercept('POST', '/api/auth/login', {
+      body: {
+        id: 1,
+        username: 'userName',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        admin: true,
+      },
+    });
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/session',
+      },
+      []
+    ).as('session');
+
+    cy.get('input[formControlName=email]').type('yoga@studio.com');
+    cy.get('input[formControlName=password]').type(
+      `${'test!1234'}{enter}{enter}`
+    );
+
+    cy.url().should('include', '/session');
+
+    cy.get('.link').contains('Logout').click();
+
+    cy.url().should('include', '/');
   });
 });

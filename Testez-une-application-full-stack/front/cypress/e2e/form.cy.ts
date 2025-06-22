@@ -24,12 +24,12 @@ describe('form page', () => {
   const TEST_SESSION = {
     id: 1,
     name: 'TEST session',
-    date: '2024-01-13T13:27:22.000+00:00',
+    date: '2025-06-03T23:07:53.000+00:00',
     teacher_id: 1,
     description: 'Ceci est une session de test',
     users: [2],
-    createdAt: '2024-01-13T14:24:33',
-    updatedAt: '2024-01-26T09:20:22',
+    createdAt: '2025-06-03T23:07:53',
+    updatedAt: '2025-06-03T23:07:53',
   };
 
   const SESSIONS_LIST = [TEST_SESSION];
@@ -44,8 +44,8 @@ describe('form page', () => {
       id: 1,
       lastName: 'DELAHAYE',
       firstName: 'Margot',
-      createdAt: '2024-01-12T15:33:42',
-      updatedAt: '2024-01-12T15:33:42',
+      createdAt: '2025-06-03T23:07:53',
+      updatedAt: '2025-06-03T23:07:53',
     },
     {
       id: 2,

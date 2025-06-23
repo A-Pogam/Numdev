@@ -40,7 +40,7 @@ class AuthControllerIntegrationTest {
     @DisplayName("Should register and login successfully with valid id")
     void shouldRegisterAndLoginSuccessfully() throws Exception {
         // ARRANGE
-        String email = "test@tentative2.com";
+        String email = "test@tentative7.com";
         String password = "test!1234";
 
         SignupRequest signUpRequest = new SignupRequest();
@@ -62,8 +62,6 @@ class AuthControllerIntegrationTest {
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(new UsernamePasswordAuthenticationToken(userDetails, null));
-
-        // ACT & ASSERT
 
         // Register
         mockMvc.perform(post("/api/auth/register")

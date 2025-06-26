@@ -1,5 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { expect } from '@jest/globals';
 
 import { FormComponent } from './form.component';
 import { SessionApiService } from '../../services/session-api.service';
@@ -126,6 +127,44 @@ describe('FormComponent', () => {
     expect(snackBarSpy.open).toHaveBeenCalledWith('Session created !', 'Close', { duration: 3000 });
     expect(routerSpy.navigate).toHaveBeenCalledWith(['sessions']);
   });
+it('should redirect to /sessions if user is not admin', () => {
+  const sessionService = TestBed.inject(SessionService);
+  if (sessionService.sessionInformation) {
+    sessionService.sessionInformation.admin = false;
+  }
+
+  const spy = jest.spyOn(routerSpy, 'navigate');
+
+  component.ngOnInit();
+
+  expect(spy).toHaveBeenCalledWith(['/sessions']);
+});
+
+it('should initialize in update mode and load session data', () => {
+  // simulate update URL
+  routerSpy.url = '/sessions/update/42';
+  const mockSession: Session = {
+    id: 42,
+    name: 'Test',
+    date: new Date('2025-08-01'),
+    teacher_id: 3,
+    description: 'desc',
+    users: []
+  };
+
+  const sessionApiService = TestBed.inject(SessionApiService);
+  jest.spyOn(sessionApiService, 'detail').mockReturnValue(of(mockSession));
+
+  // simule l'ID dans la route
+  const activatedRoute = TestBed.inject(ActivatedRoute);
+  jest.spyOn(activatedRoute.snapshot.paramMap, 'get').mockReturnValue('42');
+
+  component.ngOnInit();
+
+  expect(component.onUpdate).toBe(true);
+  expect(component.sessionForm?.value.name).toBe('Test');
+});
+
 
   it('should call update() on valid submission in edit mode', () => {
     (component as any)['onUpdate'] = true;
@@ -139,6 +178,8 @@ describe('FormComponent', () => {
       users: [],
       id: 42
     };
+
+    
 
     component.sessionForm?.setValue({
       name: mockSession.name,

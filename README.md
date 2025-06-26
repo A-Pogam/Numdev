@@ -5,17 +5,17 @@
 # Yoga App  – Tests & Qualité
 
 Ce projet full-stack repose sur :
-- ⚙️ **Angular** (frontend)
-- 🧩 **Spring Boot** (backend)
-- 🧪 **Jest** (tests unitaires front-end)
-- 🌐 **Cypress** (tests end-to-end)
-- 🔬 **JUnit + Spring Test** (tests back-end)
+- Angular (frontend)
+- Spring Boot (backend)
+- Jest (tests unitaires front-end)
+- Cypress (tests end-to-end)
+- JUnit + Spring Test (tests back-end)
 
 ---
 
-## 🧪 Tests unitaires front-end (Jest)
+## Tests unitaires front-end (Jest)
 
-### 🔧 Installation
+### Installation
 
 ```bash
 npm install

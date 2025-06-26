@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import { TestBed } from '@angular/core/testing';
 import { SessionService } from './session.service';
 import { SessionInformation } from '../interfaces/sessionInformation.interface';
@@ -25,8 +26,11 @@ describe('SessionService', () => {
     const mockUser: SessionInformation = {
       id: 1,
       username: 'testUser',
-      email: 'test@example.com',
-      // ajoute d'autres propriétés si l'interface en contient
+      token: 'fake-token',
+      type: 'Bearer',
+      firstName: 'Test',
+      lastName: 'User',
+      admin: false
     };
 
     service.logIn(mockUser);
@@ -44,11 +48,15 @@ describe('SessionService', () => {
     const mockUser: SessionInformation = {
       id: 1,
       username: 'testUser',
-      email: 'test@example.com',
+      token: 'fake-token',
+      type: 'Bearer',
+      firstName: 'Test',
+      lastName: 'User',
+      admin: false
     };
 
-    service.logIn(mockUser); // se connecter d'abord
-    service.logOut();        // puis se déconnecter
+    service.logIn(mockUser);
+    service.logOut();
 
     expect(service.isLogged).toBe(false);
     expect(service.sessionInformation).toBeUndefined();

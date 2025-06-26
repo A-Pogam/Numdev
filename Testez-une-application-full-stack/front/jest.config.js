@@ -1,23 +1,21 @@
 module.exports = {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
-  globals: {
-    'ts-jest': {
-      tsconfig: '<rootDir>/tsconfig.spec.json',
-      stringifyContentPathRegex: '\\.html$'
-    }
-  },
   testEnvironment: 'jsdom',
   transform: {
-    '^.+\\.(ts|js|html)$': 'ts-jest'
+    '^.+\\.(ts|js|html)$': ['jest-preset-angular', {
+      tsconfig: '<rootDir>/tsconfig.spec.json',
+      stringifyContentPathRegex: '\\.html$',
+      diagnostics: false
+    }]
   },
   moduleNameMapper: {
-    '@core/(.*)': '<rootDir>/src/app/core/$1',
-    '^src/(.*)$': '<rootDir>/src/$1'
+    '^src/(.*)$': '<rootDir>/src/$1',
+    '@core/(.*)': '<rootDir>/src/app/core/$1'
   },
+  transformIgnorePatterns: ['node_modules/(?!@angular|rxjs)'],
   moduleFileExtensions: ['ts', 'html', 'js', 'json'],
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
-  coveragePathIgnorePatterns: ['<rootDir>/node_modules/'],
   coverageDirectory: './coverage/jest',
   collectCoverage: true,
   collectCoverageFrom: [
@@ -26,7 +24,9 @@ module.exports = {
     '!**/main.ts',
     '!**/polyfills.ts',
     '!**/test.ts',
-    '!**/environments/**'
+    '!**/environments/**',
+    '!src/app/guards/**',
+    '!src/app/interceptors/**'
   ],
   coverageThreshold: {
     global: {

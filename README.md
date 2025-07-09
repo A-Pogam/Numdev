@@ -52,32 +52,13 @@ Un dossier `coverage/jest/` est généré. Ouvrir `index.html` dans ce dossier p
 
 ## Tests end-to-end (Cypress)
 
-### Lancer Cypress en mode interface graphique
-
-```bash
-npm run cypress:open
+```
+npm run e2e:ci
 ```
 
-### Lancer Cypress en mode headless (CI, scripts)
+Le rapport est disponible à cet endroit :
 
-```bash
-npm run cypress:run
-```
-
-### Rapport de couverture E2E
-
-```bash
-npm run coverage:report
-```
-
-Les tests e2e sont situés dans :
-
-```bash
-cypress/e2e/
-```
-
-> Utilise `nyc` et `@cypress/code-coverage` pour générer le rapport.
-
+> front/coverage/index.html
 ---
 
 ## Tests back-end (Spring Boot + JUnit)

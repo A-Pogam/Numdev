@@ -1,4 +1,4 @@
-package com.openclassrooms.starterjwt.integration;
+package com.openclassrooms.starterjwt.integration.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.starterjwt.payload.request.LoginRequest;
@@ -40,7 +40,7 @@ class AuthControllerIntegrationTest {
     @DisplayName("Should register and login successfully with valid id")
     void shouldRegisterAndLoginSuccessfully() throws Exception {
         // ARRANGE
-        String email = "test@tentative7.com";
+        String email = "test@tentative11.com";
         String password = "test!1234";
 
         SignupRequest signUpRequest = new SignupRequest();

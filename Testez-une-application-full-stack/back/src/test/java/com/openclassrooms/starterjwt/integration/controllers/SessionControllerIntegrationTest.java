@@ -1,4 +1,4 @@
-package com.openclassrooms.starterjwt.integration;
+package com.openclassrooms.starterjwt.integration.controllers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -47,6 +48,10 @@ public class SessionControllerIntegrationTest {
 
     @MockBean
     private SessionService sessionService;
+
+    @Autowired
+    private ApplicationContext context;
+
 
     @Test
     @Tag("post_api/session/--get_api/session/{id}")
@@ -75,6 +80,13 @@ public class SessionControllerIntegrationTest {
                 .andExpect(jsonPath("$.name").value(sessionDto.getName()))
                 .andExpect(jsonPath("$.description").value(sessionDto.getDescription()));
 
+    }
+
+    @Test
+    void printSessionBeans() {
+        Arrays.stream(context.getBeanDefinitionNames())
+                .filter(bean -> bean.contains("session"))
+                .forEach(System.out::println);
     }
 
     @Test

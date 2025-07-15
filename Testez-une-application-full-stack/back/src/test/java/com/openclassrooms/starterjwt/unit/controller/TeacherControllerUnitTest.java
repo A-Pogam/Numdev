@@ -1,41 +1,31 @@
 package com.openclassrooms.starterjwt.unit.controller;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import com.openclassrooms.starterjwt.controllers.TeacherController;
+import com.openclassrooms.starterjwt.dto.TeacherDto;
+import com.openclassrooms.starterjwt.mapper.TeacherMapper;
+import com.openclassrooms.starterjwt.models.Teacher;
+import com.openclassrooms.starterjwt.services.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import com.openclassrooms.starterjwt.dto.TeacherDto;
-import com.openclassrooms.starterjwt.mapper.TeacherMapper;
-import com.openclassrooms.starterjwt.models.Teacher;
-import com.openclassrooms.starterjwt.services.TeacherService;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Teacher controller test: api/teacher")
-public class TeacherControllerUnitTest {
-    private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
+class TeacherControllerUnitTest {
 
-    @InjectMocks
-    private TeacherController teacherController;
+    private MockMvc mockMvc;
 
     @Mock
     private TeacherService teacherService;
@@ -43,117 +33,88 @@ public class TeacherControllerUnitTest {
     @Mock
     private TeacherMapper teacherMapper;
 
+    @InjectMocks
+    private TeacherController teacherController;
+
+    private Teacher teacher;
+    private TeacherDto teacherDto;
+    private List<Teacher> teachers;
+    private List<TeacherDto> teacherDtos;
+
     @BeforeEach
     void setUp() {
-        teacherController = new TeacherController(teacherService, teacherMapper);
+        mockMvc = MockMvcBuilders.standaloneSetup(teacherController).build();
+
+        // Initialize test data
+        teacher = new Teacher();
+        teacher.setId(1L);
+        teacher.setLastName("Doe");
+        teacher.setFirstName("John");
+
+        teacherDto = new TeacherDto();
+        teacherDto.setId(1L);
+        teacherDto.setLastName("Doe");
+        teacherDto.setFirstName("John");
+
+        teachers = Arrays.asList(teacher);
+        teacherDtos = Arrays.asList(teacherDto);
     }
 
     @Test
-    @Tag("get_api/teacher")
-    @DisplayName("get all teachers from the database")
-    public void getAllTeachers_shouldReturnAllTheTeachers() {
-        // * Arrange
+    void findById_ShouldReturnTeacher_WhenTeacherExists() throws Exception {
+        // Given
+        when(teacherService.findById(1L)).thenReturn(teacher);
+        when(teacherMapper.toDto(teacher)).thenReturn(teacherDto);
 
-        Teacher mockTeacher1 = new Teacher();
-        mockTeacher1.setId(1L);
-        mockTeacher1.setFirstName("John");
-        mockTeacher1.setLastName("Doe");
-        mockTeacher1.setCreatedAt(LocalDateTime.now());
-        mockTeacher1.setUpdatedAt(LocalDateTime.now());
-
-        Teacher mockTeacher2 = new Teacher();
-        mockTeacher2.setId(2L);
-        mockTeacher2.setFirstName("Jane");
-        mockTeacher2.setLastName("Doe");
-        mockTeacher2.setCreatedAt(LocalDateTime.now());
-        mockTeacher2.setUpdatedAt(LocalDateTime.now());
-
-        List<Teacher> mockTeachers = Arrays.asList(
-                mockTeacher1,
-                mockTeacher2);
-
-        when(teacherService.findAll()).thenReturn(mockTeachers);
-
-        List<TeacherDto> expectedTeacherDtos = new ArrayList<>();
-
-        for (int i = 0; i < mockTeachers.size(); i++) {
-            Teacher teacher = mockTeachers.get(i);
-            TeacherDto teacherDto = new TeacherDto();
-            teacherDto.setId(teacher.getId());
-            teacherDto.setFirstName(teacher.getFirstName());
-            teacherDto.setLastName(teacher.getLastName());
-            teacherDto.setCreatedAt(teacher.getCreatedAt());
-            teacherDto.setUpdatedAt(teacher.getUpdatedAt());
-
-            expectedTeacherDtos.add(teacherDto);
-        }
-
-        when(teacherMapper.toDto(mockTeachers)).thenReturn(expectedTeacherDtos);
-
-        // * Act
-        ResponseEntity<?> result = teacherController.findAll();
-
-        // * Assert
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-
-        Boolean hasSameArrayLength = ((List<Teacher>) result.getBody()).size() == mockTeachers.size();
-        assertTrue(hasSameArrayLength);
+        // When & Then
+        mockMvc.perform(get("/api/teacher/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.firstName").value("John"));
     }
 
     @Test
-    @Tag("get_api/teacher/{id}")
-    @DisplayName("get the teacher from the database from an id")
-    public void getTeacherWithValidId_shouldReturnTheTeacher() {
-        // * Arrange
-        Long teacherId = 1L;
-        Teacher mockTeacher = new Teacher();
-        mockTeacher.setId(teacherId);
-        mockTeacher.setFirstName("John");
-        mockTeacher.setLastName("Doe");
+    void findById_ShouldReturnNotFound_WhenTeacherDoesNotExist() throws Exception {
+        // Given
+        when(teacherService.findById(1L)).thenReturn(null);
 
-        TeacherDto mockTeacherDto = new TeacherDto();
-        mockTeacherDto.setId(mockTeacher.getId());
-        mockTeacherDto.setFirstName(mockTeacher.getFirstName());
-        mockTeacherDto.setLastName(mockTeacher.getLastName());
-
-        when(teacherService.findById(teacherId)).thenReturn(mockTeacher);
-        when(teacherMapper.toDto(mockTeacher)).thenReturn(mockTeacherDto);
-
-        // * Act
-        ResponseEntity<?> result = teacherController.findById(teacherId.toString());
-
-        // * Assert
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+        // When & Then
+        mockMvc.perform(get("/api/teacher/1"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    @Tag("get_api/teacher/{id}")
-    @DisplayName("should return a 404 status code")
-    public void getTeacherWithNonExistentId_shouldReturnANotFoundError() {
-        // * Arrange
-        Long teacherId = 0L;
-        Teacher mockTeacher = new Teacher();
-        mockTeacher.setId(teacherId);
-        mockTeacher.setFirstName("John");
-        mockTeacher.setLastName("Doe");
-
-        when(teacherService.findById(teacherId)).thenReturn(null);
-
-        // * Act
-        ResponseEntity<?> result = teacherController.findById(teacherId.toString());
-
-        // * Assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+    void findById_ShouldReturnBadRequest_WhenIdIsNotValid() throws Exception {
+        // When & Then
+        mockMvc.perform(get("/api/teacher/invalid"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    @Tag("get_api/teacher/{id}")
-    @DisplayName("should return a 400 status code")
-    public void getTeacherWithInvalidId_shouldReturnABadRequestError() {
-        // * Act
-        ResponseEntity<?> result = teacherController.findById("invalid");
+    void findAll_ShouldReturnAllTeachers() throws Exception {
+        // Given
+        when(teacherService.findAll()).thenReturn(teachers);
+        when(teacherMapper.toDto(teachers)).thenReturn(teacherDtos);
 
-        // * Assert
-        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        // When & Then
+        mockMvc.perform(get("/api/teacher"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].lastName").value("Doe"))
+                .andExpect(jsonPath("$[0].firstName").value("John"));
+    }
+
+    @Test
+    void findAll_ShouldReturnEmptyList_WhenNoTeachers() throws Exception {
+        // Given
+        when(teacherService.findAll()).thenReturn(Arrays.asList());
+        when(teacherMapper.toDto(any(List.class))).thenReturn(Arrays.asList());
+
+        // When & Then
+        mockMvc.perform(get("/api/teacher"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
     }
 }

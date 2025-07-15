@@ -1,19 +1,24 @@
 {
   "name": "yoga-app",
   "version": "0.0.0",
-  "scripts": {
+"scripts": {
     "start": "ng serve",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:unit": "jest --testPathIgnorePatterns='.*\\.integration\\.spec\\.ts$' --coverage --coverageDirectory=coverage/unit",
+    "test:integration": "jest --testMatch='**/*.integration.spec.ts' --coverage --coverageDirectory=coverage/integration",
+    "test:unit:watch": "jest --testPathIgnorePatterns='.*\\.integration\\.spec\\.ts$' --watch",
+    "test:integration:watch": "jest --testMatch='**/*.integration.spec.ts' --watch",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "e2e:ci": "ng run yoga:e2e-ci",
+    "e2e:ci": "ng run yoga:e2e-ci", 
     "e2e:coverage": "npx nyc report --reporter=lcov --reporter=text-summary",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:e2e": "start-server-and-test start http://localhost:4200 cypress:run",
     "coverage:report": "nyc report --reporter=html --reporter=text-summary"
-  },
+},
+
   "private": true,
   "dependencies": {
     "@angular/animations": "14.2.0",

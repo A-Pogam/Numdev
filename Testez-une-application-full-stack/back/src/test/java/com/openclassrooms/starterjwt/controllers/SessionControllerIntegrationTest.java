@@ -1,4 +1,4 @@
-package com.openclassrooms.starterjwt.integration.controllers;
+package com.openclassrooms.starterjwt.controllers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;

@@ -34,6 +34,13 @@ npm install
 npm run test
 ```
 
+### Le rapport d'intégration
+
+```bash
+ npm run test:integration
+```
+
+
 ### Pour mode surveillance (watch)
 
 ```bash
@@ -71,11 +78,35 @@ Le rapport est disponible à cet endroit :
 
 ### Structure
 
-* `src/test/java/...` : tests unitaires et intégration
-* `@SpringBootTest` : tests d’intégration
-* `@WebMvcTest` : tests de contrôleur
+- `src/test/java/...` : tests unitaires et intégration
+  - `*Test.java` → tests unitaires
+  - `*IT.java` → tests d'intégration (Failsafe)
+- `@SpringBootTest` → tests d’intégration
+- `@WebMvcTest` → tests de contrôleur unitaires
 
 ### Rapport de couverture avec JaCoCo
+
+Avec la configuration JaCoCo dans le `pom.xml`, deux rapports sont générés :
+
+-  **Tests unitaires** :
+    ```bash
+    ./mvnw test
+    open target/site/jacoco/index.html
+    ```
+- **Tests d'intégration** :
+    ```bash
+    ./mvnw verify
+    open target/site/jacoco-integration-test-coverage-report/index.html
+    ```
+
+> Le dossier `target/site/jacoco/` contient la couverture **unitaire**.
+> 
+> Le dossier `target/site/jacoco-integration-test-coverage-report/` contient la couverture **d'intégration**.
+
+Pour tout générer d'un coup (unitaires + intégration + rapports HTML) :
+```bash
+./mvnw clean verify site
+```
 
 Dans `pom.xml`, vérifiez que vous avez :
 

@@ -1,6 +1,7 @@
-package com.openclassrooms.starterjwt.mapper;
+package com.openclassrooms.starterjwt.unit.mapper;
 
 import com.openclassrooms.starterjwt.dto.UserDto;
+import com.openclassrooms.starterjwt.mapper.UserMapper;
 import com.openclassrooms.starterjwt.models.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

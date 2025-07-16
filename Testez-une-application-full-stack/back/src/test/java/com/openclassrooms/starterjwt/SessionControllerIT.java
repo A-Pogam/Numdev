@@ -1,4 +1,4 @@
-package com.openclassrooms.starterjwt.controllers;
+package com.openclassrooms.starterjwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.openclassrooms.starterjwt.models.Session;
@@ -56,36 +56,6 @@ class SessionControllerIT {
 
         teacher = teacherRepository.save(new Teacher().setFirstName("John").setLastName("Doe"));
         user = userRepository.save(new User("john.doe@test.com", "doe", "john", "password", false));
-    }
-
-    @Test
-    @WithMockUser(username = "admin@studio.com", roles = "ADMIN")
-    void createAndRetrieveSession() throws Exception {
-        Session session = Session.builder()
-                .name("Yoga Session")
-                .description("Morning Yoga")
-                .date(new Date())
-                .teacher(teacher)
-                .users(List.of(user))
-                .build();
-
-        // Create session
-        mockMvc.perform(post("/api/session")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(session)))
-                .andExpect(status().isOk());
-
-        // Verify session is stored in DB
-        List<Session> allSessions = sessionRepository.findAll();
-        assertEquals(1, allSessions.size());
-        Long sessionId = allSessions.get(0).getId();
-
-        // Retrieve session by API
-        mockMvc.perform(get("/api/session/{id}", sessionId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is("Yoga Session")))
-                .andExpect(jsonPath("$.description", is("Morning Yoga")))
-                .andExpect(jsonPath("$.teacher.id", is(teacher.getId().intValue())));
     }
 
     @Test

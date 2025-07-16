@@ -112,18 +112,61 @@ Dans `pom.xml`, vérifiez que vous avez :
 
 ```xml
 <plugin>
-  <groupId>org.jacoco</groupId>
-  <artifactId>jacoco-maven-plugin</artifactId>
-  <version>0.8.8</version>
-  <executions>
-    <execution>
-      <goals>
-        <goal>prepare-agent</goal>
-        <goal>report</goal>
-      </goals>
-    </execution>
-  </executions>
-</plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.5</version>
+				<executions>
+					<!-- Tests unitaires -->
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+							<excludes>
+								<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
+								<exclude>com/openclassrooms/starterjwt/payload/request/**</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+
+					<!-- Tests d'intégration -->
+					<execution>
+						<id>before-integration-test-execution</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<destFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</destFile>
+							<propertyName>jacoco.argLine</propertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>after-integration-test-execution</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<dataFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</dataFile>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-integration-test-coverage-report</outputDirectory>
+							<excludes>
+							<exclude>com/openclassrooms/starterjwt/dto/**</exclude>
+							<exclude>com/openclassrooms/starterjwt/payload/request/**</exclude>
+						</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 ```
 
 Puis lancez :

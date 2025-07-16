@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class DatabaseIntegrationTest {
+public class DatabaseIT {
 
     @Autowired
     private UserRepository userRepository;
@@ -45,7 +45,6 @@ public class DatabaseIntegrationTest {
                 .build();
         userRepository.save(user1);
 
-        // Should handle unique constraint gracefully
         Optional<User> foundUser = userRepository.findByEmail("unique@test.com");
         assertThat(foundUser).isPresent();
         assertThat(foundUser.get().getFirstName()).isEqualTo("First");
@@ -265,7 +264,6 @@ public class DatabaseIntegrationTest {
 
         Optional<User> found = userRepository.findById(saved.getId());
         assertThat(found).isPresent();
-        // Password should be stored (even if not encrypted in test)
         assertThat(found.get().getPassword()).isNotNull();
         assertThat(found.get().getPassword()).isNotEmpty();
     }
@@ -331,9 +329,9 @@ public class DatabaseIntegrationTest {
                 .admin(false)
                 .build();
 
-        assertThat(user.getId()).isNull(); // Before save
+        assertThat(user.getId()).isNull();
         User saved = userRepository.save(user);
-        assertThat(saved.getId()).isNotNull(); // After save
+        assertThat(saved.getId()).isNotNull(); 
         assertThat(saved.getId()).isGreaterThan(0);
     }
 

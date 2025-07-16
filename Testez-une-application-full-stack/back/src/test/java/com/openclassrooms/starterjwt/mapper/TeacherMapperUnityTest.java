@@ -2,9 +2,8 @@ package com.openclassrooms.starterjwt.mapper;
 
 import com.openclassrooms.starterjwt.dto.TeacherDto;
 import com.openclassrooms.starterjwt.models.Teacher;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -12,12 +11,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class TeacherMapperIntegrationTest {
+class TeacherMapperUnityTest {
 
-    @Autowired
     private TeacherMapper teacherMapper;
 
+    @BeforeEach
+    void setUp() {
+        teacherMapper = new TeacherMapper();
+    }
 
     @Test
     void testToEntity() {

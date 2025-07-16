@@ -167,6 +167,14 @@ Dans `pom.xml`, vérifiez que vous avez :
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<configuration>
+					<argLine>${jacoco.argLine}</argLine>
+				</configuration>
 ```
 
 Puis lancez :

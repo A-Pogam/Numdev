@@ -18,8 +18,10 @@ module.exports = {
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
   coverageDirectory: './coverage/jest',
   collectCoverage: true,
-  collectCoverageFrom: [
+collectCoverageFrom: [
     'src/app/**/*.{ts,js}',
+    '!src/**/*.spec.ts',
+    '!src/**/*.integration.spec.ts',
     '!**/*.module.ts',
     '!**/main.ts',
     '!**/polyfills.ts',

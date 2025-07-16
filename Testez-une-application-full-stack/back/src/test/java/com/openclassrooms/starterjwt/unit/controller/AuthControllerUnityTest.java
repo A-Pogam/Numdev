@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class AuthControllerUnitTest {
+public class AuthControllerUnityTest {
 
     @InjectMocks
     private AuthController authController;
